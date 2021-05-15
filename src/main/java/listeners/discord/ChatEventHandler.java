@@ -1,4 +1,4 @@
-package listeners;
+package listeners.discord;
 
 import config.BotConfig;
 import net.dv8tion.jda.api.EmbedBuilder;
