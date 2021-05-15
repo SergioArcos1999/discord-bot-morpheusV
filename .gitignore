@@ -4,3 +4,5 @@
 /botToken
 
 /.idea/
+
+/src/main/resources/consumer.conf
