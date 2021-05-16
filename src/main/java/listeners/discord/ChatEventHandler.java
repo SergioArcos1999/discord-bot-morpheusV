@@ -35,6 +35,9 @@ public class ChatEventHandler extends ListenerAdapter {
                     ).queue();
                     info.clear();
                 }
+                if(textVector[1].equalsIgnoreCase("twitter")) {
+                    BotConfig.listenTwitter = !BotConfig.listenTwitter;
+                }
 
             }
             else {

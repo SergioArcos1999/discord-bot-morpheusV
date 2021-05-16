@@ -1,6 +1,7 @@
 package listeners.twitter;
 
 import commons.utils.discord.producer.DiscordProducer;
+import config.BotConfig;
 import listeners.discord.ChatEventHandler;
 import listeners.twitter.config.TwitterContext;
 import listeners.twitter.config.TwitterSourceConstants;
@@ -9,11 +10,21 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.*;
+import twitter4j.api.*;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.Authorization;
+import twitter4j.auth.OAuth2Token;
+import twitter4j.auth.RequestToken;
+import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.util.function.Consumer;
 
 import javax.naming.*;
 import java.awt.*;
+import java.io.File;
+import java.io.InputStream;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 
 public class TwitterConsumer {
@@ -52,28 +63,30 @@ public class TwitterConsumer {
                 final String content = status.getText();
                 System.out.println(username + ": " + content);
                 logger.info(status.getUser().getScreenName() + ": " + status.getText());
-                try {
-                    webhook.setContent("Se ha encontrado el siguiente tweet en la intrané: "
-                            + content);
-                    webhook.execute();
-                } catch (Exception ex) {
-                    logger.info(ex.getMessage());
+                if(BotConfig.listenTwitter) {
+                    try {
+                        webhook.setContent("Se ha encontrado el siguiente tweet en la intrané: "
+                                + content);
+                        webhook.execute();
+                    } catch (Exception ex) {
+                        logger.info(ex.getMessage());
+                    }
                 }
             }
 
             @Override
             public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
-
+                System.out.println("Got a status deletion notice id:" + statusDeletionNotice.getStatusId());
             }
 
             @Override
-            public void onTrackLimitationNotice(int numberOfLimitationNotice) {
-
+            public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
+                System.out.println("Got track limitation notice:" + numberOfLimitedStatuses);
             }
 
             @Override
             public void onScrubGeo(long userId, long upToStatusId) {
-
+                System.out.println("Got scrub_geo event userId:" + userId + " upToStatusId:" + upToStatusId);
             }
 
             @Override
@@ -83,7 +96,7 @@ public class TwitterConsumer {
 
             @Override
             public void onStallWarning(StallWarning warning) {
-
+                System.out.println("Got stall warning:" + warning);
             }
         };
 
@@ -91,13 +104,15 @@ public class TwitterConsumer {
 
         String[] keywords = {"viral", "españa" , "barcelona"}; /* "zaragoza", "madrid", "barcelona" */
         String[] languages = {"es"};
-        //long users = Long.valueOf("sergio_arcos19"); //_danilorenzo_
 
-        filterQuery.language(languages);
-        filterQuery.track(keywords); //language(language).follow(users);
+
+
+        long users[] = new long[] {2382599791L, 861678265L}; //_danilorenzo_
+
+        //filterQuery.language(languages);
+        filterQuery.follow(users); //track(keywords); //language(language).follow(users);
 
         twitterStream.addListener(listener)
-                .filter(filterQuery)
-                .sample();
+                .filter(filterQuery);
     }
 }
