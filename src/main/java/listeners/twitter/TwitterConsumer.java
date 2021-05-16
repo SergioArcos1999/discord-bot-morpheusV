@@ -2,30 +2,15 @@ package listeners.twitter;
 
 import commons.utils.discord.producer.DiscordProducer;
 import config.BotConfig;
-import listeners.discord.ChatEventHandler;
 import listeners.twitter.config.TwitterContext;
 import listeners.twitter.config.TwitterSourceConstants;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.*;
-import twitter4j.api.*;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.Authorization;
-import twitter4j.auth.OAuth2Token;
-import twitter4j.auth.RequestToken;
-import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
-import twitter4j.util.function.Consumer;
 
-import javax.naming.*;
-import java.awt.*;
-import java.io.File;
-import java.io.InputStream;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TwitterConsumer {
     private static final Logger logger = LoggerFactory.getLogger(TwitterConsumer.class);
@@ -36,6 +21,11 @@ public class TwitterConsumer {
     private String accessTokenSecret;
 
     private TwitterStream twitterStream;
+
+    String[] keywords = {"viral", "españa", "barcelona"}; /* "zaragoza", "madrid", "barcelona" */
+    String[] languages = {"es"};
+    long[] usersFilter = new long[]{2382599791L, 861678265L, 44196397L}; //Dani, yo, elonmusk
+    ArrayList<Long> users = new ArrayList<>(Arrays.asList(2382599791L, 861678265L, 44196397L));
 
     public void start(TwitterContext context) {
 
@@ -52,20 +42,22 @@ public class TwitterConsumer {
 
 
         twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
-        DiscordProducer webhook = new DiscordProducer("https://discord.com/api/webhooks/843227367522828299/5H_sxFtEF98rzrAuuWruwIazvYiwVljaofFg2otEpTZHROIMjuYbdPmxc4BLOhAR_I_e");
+        DiscordProducer webhook = new DiscordProducer(BotConfig.discordChatWebhooks[0]);
 
 
         StatusListener listener = new StatusListener() {
 
             @Override
             public void onStatus(Status status) {
-                final String username = status.getUser().getScreenName();
+                final Long userId = status.getUser().getId();
+                final String userName = status.getUser().getScreenName();
                 final String content = status.getText();
-                System.out.println(username + ": " + content);
-                logger.info(status.getUser().getScreenName() + ": " + status.getText());
-                if(BotConfig.listenTwitter) {
+
+                if (BotConfig.listenTwitter && users.contains(userId)) {
+                    System.out.println("---TWITTER--- " + userName + ": " + content);
+                    logger.info(userName + ": " + content);
                     try {
-                        webhook.setContent("Se ha encontrado el siguiente tweet en la intrané: "
+                        webhook.setContent(userName + " acaba de twittear: "
                                 + content);
                         webhook.execute();
                     } catch (Exception ex) {
@@ -98,19 +90,19 @@ public class TwitterConsumer {
             public void onStallWarning(StallWarning warning) {
                 System.out.println("Got stall warning:" + warning);
             }
+
+            private boolean from_creator(Status status) {
+                if (status.getInReplyToUserId() == TwitterResponse.NONE) return false;
+                else if (status.getInReplyToStatusId() == TwitterResponse.NONE) return false;
+                    //else if(status.getInReplyToScreenName() == null) return false;
+                else return true;
+            }
         };
 
         FilterQuery filterQuery = new FilterQuery();
 
-        String[] keywords = {"viral", "españa" , "barcelona"}; /* "zaragoza", "madrid", "barcelona" */
-        String[] languages = {"es"};
-
-
-
-        long users[] = new long[] {2382599791L, 861678265L}; //_danilorenzo_
-
         //filterQuery.language(languages);
-        filterQuery.follow(users); //track(keywords); //language(language).follow(users);
+        filterQuery.follow(usersFilter); //track(keywords); //language(language).follow(users);
 
         twitterStream.addListener(listener)
                 .filter(filterQuery);

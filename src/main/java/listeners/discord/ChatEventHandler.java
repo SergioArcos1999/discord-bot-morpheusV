@@ -37,6 +37,8 @@ public class ChatEventHandler extends ListenerAdapter {
                 }
                 if(textVector[1].equalsIgnoreCase("twitter")) {
                     BotConfig.listenTwitter = !BotConfig.listenTwitter;
+                    if(BotConfig.listenTwitter) event.getChannel().sendMessage("Escuchando tweets...").queue();
+                    else event.getChannel().sendMessage("Dejo de escuchar tweets...").queue();
                 }
 
             }
