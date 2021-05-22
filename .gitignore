@@ -1,8 +1,11 @@
 # Project exclude paths
 /.gradle/
 
-/botToken
+/src/main/resources/botToken
 
-/.idea/
+build
 
-/src/main/resources/consumer.conf
+.idea
+/src/main/resources/twitterConsumerConfig.conf
+/META-INF/
+/out/
