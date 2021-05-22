@@ -1,0 +1,24 @@
+Main.java
+ Main
+commons/utils/CustomFileReader.java
+ commons.utils.CustomFileReader
+listeners/twitter/config/TwitterSourceConstants.java
+ listeners.twitter.config.TwitterSourceConstants
+listeners/twitter/config/TwitterContext.java
+ listeners.twitter.config.TwitterContext
+producers/discord/DiscordProducer.java
+ producers.discord.DiscordProducer
+ producers.discord.DiscordProducer$EmbedObject
+ producers.discord.DiscordProducer$EmbedObject$Author
+ producers.discord.DiscordProducer$EmbedObject$Field
+ producers.discord.DiscordProducer$EmbedObject$Footer
+ producers.discord.DiscordProducer$EmbedObject$Image
+ producers.discord.DiscordProducer$EmbedObject$Thumbnail
+ producers.discord.DiscordProducer$JSONObject
+listeners/discord/ChatEventHandler.java
+ listeners.discord.ChatEventHandler
+listeners/twitter/TwitterConsumer.java
+ listeners.twitter.TwitterConsumer
+ listeners.twitter.TwitterConsumer$1
+config/BotConfig.java
+ config.BotConfig

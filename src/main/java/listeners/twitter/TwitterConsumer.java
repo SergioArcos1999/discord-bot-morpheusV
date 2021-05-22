@@ -1,6 +1,6 @@
 package listeners.twitter;
 
-import commons.utils.discord.producer.DiscordProducer;
+import producers.discord.DiscordProducer;
 import config.BotConfig;
 import listeners.twitter.config.TwitterContext;
 import listeners.twitter.config.TwitterSourceConstants;
@@ -24,8 +24,8 @@ public class TwitterConsumer {
 
     String[] keywords = {"viral", "españa", "barcelona"}; /* "zaragoza", "madrid", "barcelona" */
     String[] languages = {"es"};
-    long[] usersFilter = new long[]{2382599791L, 861678265L, 44196397L}; //Dani, yo, elonmusk
-    ArrayList<Long> users = new ArrayList<>(Arrays.asList(2382599791L, 861678265L, 44196397L));
+    long[] usersFilter = new long[]{2382599791L, 861678265L}; //Dani, yo, elonmusk ---> 44196397L
+    ArrayList<Long> users = new ArrayList<>(Arrays.asList(2382599791L, 861678265L));
 
     public void start(TwitterContext context) {
 

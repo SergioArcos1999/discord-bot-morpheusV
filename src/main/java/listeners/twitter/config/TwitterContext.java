@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class TwitterContext {
-    public static final String CONF_PATH = "consumer.conf";
+    public static final String CONF_PATH = "twitterConsumerConfig.conf";
     Properties prop;
 
     public TwitterContext() throws Exception {

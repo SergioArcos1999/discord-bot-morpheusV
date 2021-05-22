@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import org.apache.log4j.BasicConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +17,10 @@ public class Main {
 
     public static void main(String[] args) throws LoginException {
 
+        BasicConfigurator.configure();
+
         CustomFileReader reader = new CustomFileReader();
-        String botToken = reader.read("botToken");
+        String botToken = reader.read("src/main/resources/botToken");
 
         JDA builder = JDABuilder.createDefault(botToken).build();
         builder.addEventListener(new ChatEventHandler());
